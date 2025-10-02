@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Download, Mail, FileText, Share2, Printer, CheckCircle } from 'lucide-react';
+import { Download, Mail, FileText, Share2, Printer, CheckCircle, ExternalLink } from 'lucide-react';
 
 interface ExportOption {
   id: string;
@@ -35,8 +35,8 @@ const ExportOptions = () => {
     {
       id: 'pdf-report',
       title: 'Download PDF Report',
-      description: 'Complete risk assessment with charts and recommendations',
-      icon: FileText,
+      description: 'Complete analysis with charts',
+      icon: Download,
       color: 'from-red-500 to-red-600',
       action: () => {
         // Simulate PDF download
@@ -49,7 +49,7 @@ const ExportOptions = () => {
     {
       id: 'email-summary',
       title: 'Email Summary',
-      description: 'Send executive summary to stakeholders',
+      description: 'Send to stakeholders',
       icon: Mail,
       color: 'from-blue-500 to-blue-600',
       action: () => {
@@ -60,9 +60,9 @@ const ExportOptions = () => {
     {
       id: 'print-report',
       title: 'Print Report',
-      description: 'Print-friendly version of the full analysis',
+      description: 'Physical copy for records',
       icon: Printer,
-      color: 'from-gray-500 to-gray-600',
+      color: 'from-slate-500 to-slate-600',
       action: () => {
         window.print();
       }
@@ -70,9 +70,9 @@ const ExportOptions = () => {
     {
       id: 'share-link',
       title: 'Share Link',
-      description: 'Generate secure link for team collaboration',
-      icon: Share2,
-      color: 'from-green-500 to-green-600',
+      description: 'Secure team collaboration',
+      icon: ExternalLink,
+      color: 'from-emerald-500 to-emerald-600',
       action: () => {
         navigator.clipboard.writeText('https://app.aidealchecker.com/share/abc123');
         alert('Secure link copied to clipboard');
@@ -84,16 +84,18 @@ const ExportOptions = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6"
+      className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl"
     >
-      <div className="flex items-center space-x-3 mb-6">
-        <Download className="h-6 w-6 text-teal-400" />
-        <h2 className="text-xl font-semibold text-white">
+      <div className="flex items-center space-x-3 mb-8">
+        <div className="p-2 bg-gradient-to-r from-teal-500 to-primary-500 rounded-lg">
+          <Share2 className="h-5 w-5 text-white" />
+        </div>
+        <h2 className="text-xl font-bold text-white">
           Export & Share
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+      <div className="grid grid-cols-2 gap-4 mb-6">
         {exportOptions.map((option, index) => {
           const Icon = option.icon;
           const isCurrentlyExporting = isExporting === option.id;
@@ -105,48 +107,57 @@ const ExportOptions = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => handleExport(option.id, option.action)}
               disabled={isCurrentlyExporting || isComplete}
               className={`
-                relative flex flex-col items-center justify-center p-4 h-40 rounded-xl shadow-lg bg-white/10 backdrop-blur-md border border-white/20 text-center transition-all duration-200 hover:border-green-400
+                group relative flex flex-col items-center justify-center p-6 h-32 rounded-xl 
+                bg-white/8 backdrop-blur-md border border-white/15 text-center 
+                transition-all duration-300 ease-out
+                hover:bg-white/12 hover:border-white/30 hover:shadow-xl
                 ${isComplete 
-                  ? 'border-green-400/50 bg-green-500/20' 
-                  : 'hover:bg-white/15'
+                  ? 'border-emerald-400/60 bg-emerald-500/15 shadow-emerald-500/20 shadow-lg' 
+                  : ''
                 }
-                ${isCurrentlyExporting ? 'cursor-not-allowed' : 'cursor-pointer'}
+                ${isCurrentlyExporting ? 'cursor-not-allowed opacity-75' : 'cursor-pointer'}
               `}
             >
+              {/* Icon Container */}
               <div className={`
-                p-3 rounded-lg bg-gradient-to-r ${option.color} mb-2 w-10 h-10 flex items-center justify-center
+                relative p-2.5 rounded-lg bg-gradient-to-r ${option.color} mb-3 
+                w-12 h-12 flex items-center justify-center shadow-lg
+                transition-transform duration-300 group-hover:scale-110
                 ${isCurrentlyExporting ? 'animate-pulse' : ''}
               `}>
                 {isComplete ? (
-                  <CheckCircle className="h-6 w-6 text-white" />
+                  <CheckCircle className="h-6 w-6 text-white drop-shadow-sm" />
                 ) : (
-                  <Icon className="h-6 w-6 text-white" />
+                  <Icon className="h-6 w-6 text-white drop-shadow-sm" />
                 )}
               </div>
               
-              <h3 className="font-semibold text-white text-lg mb-1">
-                {isComplete ? 'Export Complete!' : option.title}
+              {/* Title */}
+              <h3 className="font-semibold text-white text-sm mb-1 leading-tight">
+                {isComplete ? 'Complete!' : option.title}
               </h3>
-              <p className="text-sm text-slate-300 leading-snug">
+              
+              {/* Description */}
+              <p className="text-xs text-white/70 leading-tight px-1">
                 {isComplete ? 'Successfully exported' : option.description}
               </p>
               
+              {/* Loading Progress */}
               {isCurrentlyExporting && (
-                <div className="mt-2 w-full">
-                  <div className="w-full bg-white/20 rounded-full h-1">
+                <div className="absolute bottom-2 left-4 right-4">
+                  <div className="w-full bg-white/20 rounded-full h-1 overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: '100%' }}
                       transition={{ duration: 2 }}
-                      className="bg-white h-1 rounded-full"
+                      className="bg-gradient-to-r from-white to-white/80 h-1 rounded-full"
                     />
                   </div>
-                  <p className="text-white/60 text-xs mt-1">Preparing export...</p>
                 </div>
               )}
             </motion.button>
@@ -155,16 +166,16 @@ const ExportOptions = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="mt-6 pt-6 border-t border-white/10">
-        <h3 className="text-white font-medium mb-3">Quick Actions</h3>
+      <div className="pt-6 border-t border-white/10">
+        <h3 className="text-white/90 font-medium mb-4 text-sm">Quick Actions</h3>
         <div className="flex flex-wrap gap-2">
-          <button className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors">
+          <button className="px-3 py-1.5 bg-white/8 hover:bg-white/15 text-white/80 hover:text-white text-xs rounded-lg transition-all duration-200 border border-white/10 hover:border-white/20">
             Save to Favorites
           </button>
-          <button className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors">
+          <button className="px-3 py-1.5 bg-white/8 hover:bg-white/15 text-white/80 hover:text-white text-xs rounded-lg transition-all duration-200 border border-white/10 hover:border-white/20">
             Add to Watchlist
           </button>
-          <button className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors">
+          <button className="px-3 py-1.5 bg-white/8 hover:bg-white/15 text-white/80 hover:text-white text-xs rounded-lg transition-all duration-200 border border-white/10 hover:border-white/20">
             Schedule Review
           </button>
         </div>
