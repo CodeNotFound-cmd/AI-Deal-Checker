@@ -102,32 +102,11 @@ const mockExplanations: { [key: string]: ExplanationData } = {
   }
 };
 
-const mockExplanations: { [key: string]: ExplanationData } = {
-  '4': {
-    id: '4',
-    title: 'Interest Rate Missing',
-    severity: 'high',
-    explanation: 'The document lacks a specified interest rate, which is a critical component for derivative contracts. This creates uncertainty about the financial terms and potential returns, significantly increasing counterparty risk and making the deal difficult to value accurately.',
-    regulation: 'ISDA Master Agreement Section 4.3 requires explicit interest rate specification for all derivative transactions. This aligns with Basel III regulatory requirements for transparent pricing mechanisms.',
-    documentSnippet: '"Interest Rate: [TO BE CONFIRMED]" - This placeholder text indicates the rate was not finalized at the time of documentation.',
-    recommendation: 'Contact the counterparty immediately to confirm the interest rate terms. Consider adding a fallback rate mechanism (e.g., SOFR + spread) to prevent future ambiguity.'
-  },
-  '3': {
-    id: '3',
-    title: 'Counterparty Verification',
-    severity: 'medium',
-    explanation: 'ABC Bank Ltd. was not found in our primary sanctions database, which could indicate incomplete entity verification. While this may be a false positive, it requires manual review to ensure compliance with anti-money laundering regulations.',
-    regulation: 'OFAC sanctions screening requirements mandate verification against all relevant watchlists. EU sanctions regulations also require enhanced due diligence for financial institutions.',
-    documentSnippet: '"Counterparty: ABC Bank Ltd." - Entity requires additional verification against secondary databases and regulatory filings.',
-    recommendation: 'Perform enhanced due diligence including: (1) Check secondary sanctions databases, (2) Verify current regulatory status, (3) Confirm entity registration and good standing.'
-  }
-};
 
 const ValidationPage = () => {
   const [riskScore, setRiskScore] = useState(0);
   const [isCalculating, setIsCalculating] = useState(true);
   const [validations, setValidations] = useState<ValidationItem[]>([]);
-  const [expandedExplanations, setExpandedExplanations] = useState<Set<string>>(new Set());
   const [expandedExplanations, setExpandedExplanations] = useState<Set<string>>(new Set());
   const navigate = useNavigate();
 
