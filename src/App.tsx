@@ -37,7 +37,7 @@ function AppContent() {
       
       <div className="relative z-10 flex h-screen">
         <Sidebar />
-        <main className="flex-1 overflow-hidden">
+        <main className="flex-1 overflow-y-auto">
           <PageWrapper>
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />

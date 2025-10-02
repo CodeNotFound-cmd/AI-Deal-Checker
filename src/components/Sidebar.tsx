@@ -24,7 +24,7 @@ const Sidebar = () => {
   const currentStep = steps.find(step => step.path === location.pathname)?.id || 0;
 
   return (
-    <div className="w-80 bg-white/10 backdrop-blur-md border-r border-white/20">
+    <div className="w-64 lg:w-80 bg-white/10 backdrop-blur-md border-r border-white/20 h-screen flex flex-col">
       <div className="p-6">
         <div className="flex items-center space-x-3 mb-8">
           <div className="p-3 bg-gradient-to-r from-teal-500 to-primary-500 rounded-xl">
@@ -112,7 +112,7 @@ const Sidebar = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mt-8 p-4 bg-gradient-to-r from-teal-500/20 to-primary-500/20 rounded-xl border border-white/10"
+          className="mt-auto p-4 bg-gradient-to-r from-teal-500/20 to-primary-500/20 rounded-xl border border-white/10"
         >
           <div className="flex items-center space-x-3 mb-2">
             <TrendingUp className="h-5 w-5 text-teal-300" />

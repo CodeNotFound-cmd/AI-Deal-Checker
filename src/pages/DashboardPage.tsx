@@ -157,8 +157,8 @@ const DashboardPage = () => {
   const avgRiskScore = Math.round(mockDeals.reduce((sum, deal) => sum + deal.riskScore, 0) / totalDeals);
 
   return (
-    <div className="h-full p-6 overflow-y-auto">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen p-6 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -192,7 +192,7 @@ const DashboardPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
         >
           {[
             {
@@ -226,7 +226,7 @@ const DashboardPage = () => {
                        'bg-red-500/10 border-red-400/30'
             }
           ].map((stat, index) => (
-            <div key={index} className={`bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-6 ${stat.bgColor}`}>
+            <div key={index} className={`bg-white/10 backdrop-blur-md border border-white/20 rounded-xl p-4 md:p-6 ${stat.bgColor}`}>
               <div className="flex items-center space-x-3 mb-2">
                 <stat.icon className={`h-6 w-6 ${stat.color}`} />
                 <span className="text-white/70 font-medium">{stat.title}</span>
@@ -243,9 +243,9 @@ const DashboardPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 mb-6"
+          className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 md:p-6"
         >
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
             <div className="flex items-center space-x-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-white/50" />
@@ -254,7 +254,7 @@ const DashboardPage = () => {
                   placeholder="Search deals..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-teal-400 transition-colors"
+                  className="w-full sm:w-auto pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:border-teal-400 transition-colors"
                 />
               </div>
               
@@ -263,7 +263,7 @@ const DashboardPage = () => {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="bg-white/10 border border-white/20 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-teal-400 transition-colors"
+                  className="w-full sm:w-auto bg-white/10 border border-white/20 rounded-lg text-white px-3 py-2 focus:outline-none focus:border-teal-400 transition-colors"
                 >
                   <option value="all">All Status</option>
                   <option value="approved">Approved</option>
@@ -285,19 +285,19 @@ const DashboardPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl overflow-hidden"
+          className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl"
         >
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-white/5">
+          <div className="overflow-x-auto max-h-[500px] overflow-y-auto">
+            <table className="min-w-full table-auto">
+              <thead className="bg-white/5 sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-4 text-left text-white font-semibold">Deal ID</th>
-                  <th className="px-6 py-4 text-left text-white font-semibold">Counterparty</th>
-                  <th className="px-6 py-4 text-left text-white font-semibold">Notional</th>
-                  <th className="px-6 py-4 text-left text-white font-semibold">Risk Score</th>
-                  <th className="px-6 py-4 text-left text-white font-semibold">Status</th>
-                  <th className="px-6 py-4 text-left text-white font-semibold">Last Updated</th>
-                  <th className="px-6 py-4 text-left text-white font-semibold">Actions</th>
+                  <th className="px-4 py-3 text-left text-white font-semibold whitespace-nowrap">Deal ID</th>
+                  <th className="px-4 py-3 text-left text-white font-semibold whitespace-nowrap">Counterparty</th>
+                  <th className="px-4 py-3 text-left text-white font-semibold whitespace-nowrap">Notional</th>
+                  <th className="px-4 py-3 text-left text-white font-semibold whitespace-nowrap">Risk Score</th>
+                  <th className="px-4 py-3 text-left text-white font-semibold whitespace-nowrap">Status</th>
+                  <th className="px-4 py-3 text-left text-white font-semibold whitespace-nowrap">Last Updated</th>
+                  <th className="px-4 py-3 text-left text-white font-semibold whitespace-nowrap">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/10">
@@ -309,37 +309,37 @@ const DashboardPage = () => {
                     transition={{ delay: index * 0.05 + 0.4 }}
                     className="hover:bg-white/5 transition-colors"
                   >
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3">
                       <div>
                         <div className="text-white font-medium">{deal.dealId}</div>
                         <div className="text-white/60 text-sm">{deal.documentType}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-white">{deal.counterparty}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3 text-white">{deal.counterparty}</td>
+                    <td className="px-4 py-3">
                       <div>
                         <div className="text-white font-medium">{deal.notionalAmount}</div>
                         <div className="text-white/60 text-sm">{deal.currency}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3">
                       <div className={`text-xl font-bold ${getRiskScoreColor(deal.riskScore)}`}>
                         {deal.riskScore}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3">
                       <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(deal.status)}`}>
                         {getStatusIcon(deal.status)}
                         <span>{deal.status.charAt(0).toUpperCase() + deal.status.slice(1)}</span>
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-white/70 text-sm">
+                    <td className="px-4 py-3 text-white/70 text-sm">
                       {formatDate(deal.lastUpdated)}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-3">
                       <button
                         onClick={() => handleViewDeal(deal.id)}
-                        className="inline-flex items-center space-x-1 px-3 py-1 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors"
+                        className="inline-flex items-center space-x-1 px-2 py-1 bg-white/10 hover:bg-white/20 text-white text-xs rounded-lg transition-colors whitespace-nowrap"
                       >
                         <Eye className="h-4 w-4" />
                         <span>View</span>
