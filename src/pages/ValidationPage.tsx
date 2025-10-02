@@ -155,17 +155,6 @@ const ValidationPage = () => {
     });
   };
 
-  const toggleExplanation = (validationId: string) => {
-    setExpandedExplanations(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(validationId)) {
-        newSet.delete(validationId);
-      } else {
-        newSet.add(validationId);
-      }
-      return newSet;
-    });
-  };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
