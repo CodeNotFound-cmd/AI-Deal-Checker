@@ -7,6 +7,7 @@ interface HighlightedText {
   text: string;
   position: { top: number; left: number; width: number; height: number };
   color: string;
+  confidence: number;
 }
 
 const mockHighlights: HighlightedText[] = [
@@ -14,36 +15,49 @@ const mockHighlights: HighlightedText[] = [
     field: 'Counterparty',
     text: 'ABC Bank Ltd.',
     position: { top: 15, left: 20, width: 12, height: 2 },
-    color: 'bg-green-400/30 border-green-400'
+    color: 'bg-green-400/30 border-green-400',
+    confidence: 98
   },
   {
     field: 'Notional Amount',
     text: '$100,000,000',
     position: { top: 25, left: 45, width: 15, height: 2 },
-    color: 'bg-blue-400/30 border-blue-400'
+    color: 'bg-green-400/30 border-green-400',
+    confidence: 95
   },
   {
     field: 'Trade Date',
     text: '2024-01-15',
     position: { top: 35, left: 30, width: 10, height: 2 },
-    color: 'bg-teal-400/30 border-teal-400'
+    color: 'bg-green-400/30 border-green-400',
+    confidence: 92
   },
   {
-    field: 'Missing Interest Rate',
+    field: 'Interest Rate',
     text: '[MISSING]',
     position: { top: 45, left: 25, width: 18, height: 2 },
-    color: 'bg-red-400/30 border-red-400'
+    color: 'bg-red-400/30 border-red-400',
+    confidence: 0
+  },
+  {
+    field: 'Collateral',
+    text: 'Government Bonds',
+    position: { top: 55, left: 35, width: 16, height: 2 },
+    color: 'bg-yellow-400/30 border-yellow-400',
+    confidence: 67
   }
 ];
 
 interface DocumentPreviewProps {
   documentName?: string;
   onHighlightHover?: (field: string | null) => void;
+  hoveredField?: string | null;
 }
 
 const DocumentPreview: React.FC<DocumentPreviewProps> = ({ 
   documentName = "deal-contract-2024.pdf",
-  onHighlightHover 
+  onHighlightHover,
+  hoveredField
 }) => {
   const [zoom, setZoom] = useState(100);
   const [selectedHighlight, setSelectedHighlight] = useState<string | null>(null);
@@ -52,49 +66,43 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 25, 50));
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl overflow-hidden h-full"
-    >
+    <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden h-full flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-white/10 flex items-center justify-between">
+      <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-gray-50">
         <div className="flex items-center space-x-3">
-          <FileText className="h-5 w-5 text-teal-400" />
-          <span className="text-white font-medium">{documentName}</span>
+          <FileText className="h-5 w-5 text-gray-600" />
+          <span className="text-gray-800 font-medium">{documentName}</span>
         </div>
         
         <div className="flex items-center space-x-2">
           <button
             onClick={handleZoomOut}
-            className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+            className="p-2 bg-white hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
           >
-            <ZoomOut className="h-4 w-4 text-white" />
+            <ZoomOut className="h-4 w-4 text-gray-600" />
           </button>
-          <span className="text-white/70 text-sm min-w-[3rem] text-center">
+          <span className="text-gray-600 text-sm min-w-[3rem] text-center">
             {zoom}%
           </span>
           <button
             onClick={handleZoomIn}
-            className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+            className="p-2 bg-white hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
           >
-            <ZoomIn className="h-4 w-4 text-white" />
+            <ZoomIn className="h-4 w-4 text-gray-600" />
           </button>
-          <button className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors">
-            <Download className="h-4 w-4 text-white" />
+          <button className="p-2 bg-white hover:bg-gray-100 rounded-lg transition-colors border border-gray-200">
+            <Download className="h-4 w-4 text-gray-600" />
           </button>
         </div>
       </div>
 
       {/* Document Preview */}
-      <div className="p-4 h-full overflow-auto">
+      <div className="flex-1 p-4 overflow-auto bg-gray-100">
         <div 
-          className="relative bg-white rounded-lg shadow-lg mx-auto"
+          className="relative bg-white rounded-lg shadow-lg mx-auto border border-gray-300"
           style={{ 
             width: `${(8.5 * zoom) / 100 * 96}px`,
             minHeight: `${(11 * zoom) / 100 * 96}px`,
-            transform: `scale(${zoom / 100})`,
-            transformOrigin: 'top center'
           }}
         >
           {/* Mock Document Content */}
@@ -142,7 +150,9 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({
               animate={{ opacity: 1 }}
               transition={{ delay: index * 0.2 }}
               className={`absolute border-2 rounded cursor-pointer transition-all duration-200 ${highlight.color} ${
-                selectedHighlight === highlight.field ? 'opacity-80 scale-105' : 'opacity-60 hover:opacity-80'
+                selectedHighlight === highlight.field || hoveredField === highlight.field 
+                  ? 'opacity-90 scale-105 ring-2 ring-teal-400 shadow-lg' 
+                  : 'opacity-60 hover:opacity-80'
               }`}
               style={{
                 top: `${highlight.position.top}%`,
@@ -156,9 +166,15 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({
               onMouseEnter={() => onHighlightHover?.(highlight.field)}
               onMouseLeave={() => onHighlightHover?.(null)}
             >
-              {selectedHighlight === highlight.field && (
-                <div className="absolute -top-8 left-0 bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
-                  {highlight.field}: {highlight.text}
+              {(selectedHighlight === highlight.field || hoveredField === highlight.field) && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute -top-12 left-0 bg-gray-900 text-white text-xs px-3 py-2 rounded-lg whitespace-nowrap z-10 shadow-lg"
+                >
+                  <div className="font-medium">{highlight.field}</div>
+                  <div className="text-gray-300">{highlight.text} • {highlight.confidence}%</div>
+                  <div className="absolute top-full left-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
                 </div>
               )}
             </motion.div>
@@ -167,8 +183,8 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({
       </div>
 
       {/* Legend */}
-      <div className="p-4 border-t border-white/10">
-        <h4 className="text-white font-medium mb-2">Extracted Fields</h4>
+      <div className="p-4 border-t border-gray-200 bg-gray-50">
+        <h4 className="text-gray-800 font-medium mb-2">Extracted Fields</h4>
         <div className="flex flex-wrap gap-2">
           {mockHighlights.map((highlight, index) => (
             <button
@@ -176,16 +192,22 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({
               onClick={() => setSelectedHighlight(
                 selectedHighlight === highlight.field ? null : highlight.field
               )}
-              className={`px-2 py-1 rounded text-xs border transition-all ${highlight.color} ${
-                selectedHighlight === highlight.field ? 'opacity-100' : 'opacity-70 hover:opacity-100'
+              className={`px-3 py-1 rounded-full text-xs border transition-all ${
+                highlight.confidence >= 90 ? 'bg-green-100 border-green-300 text-green-800' :
+                highlight.confidence >= 70 ? 'bg-yellow-100 border-yellow-300 text-yellow-800' :
+                'bg-red-100 border-red-300 text-red-800'
+              } ${
+                selectedHighlight === highlight.field || hoveredField === highlight.field 
+                  ? 'opacity-100 ring-2 ring-teal-400' 
+                  : 'opacity-70 hover:opacity-100'
               }`}
             >
-              {highlight.field}
+              {highlight.field} ({highlight.confidence}%)
             </button>
           ))}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
