@@ -7,6 +7,7 @@ import UploadPage from './pages/UploadPage';
 import ExtractionPage from './pages/ExtractionPage';
 import ValidationPage from './pages/ValidationPage';
 import SummaryPage from './pages/SummaryPage';
+import MultiDocAnalysisPage from './pages/MultiDocAnalysisPage';
 import AIChat from './components/AIChat';
 import { useLocation } from 'react-router-dom';
 
@@ -46,6 +47,7 @@ function AppContent() {
               <Route path="/extract" element={<ExtractionPage />} />
               <Route path="/validate" element={<ValidationPage />} />
               <Route path="/summary" element={<SummaryPage />} />
+              <Route path="/multi-doc-analysis" element={<MultiDocAnalysisPage />} />
             </Routes>
           </PageWrapper>
         </main>

@@ -8,19 +8,30 @@ import {
   CheckCircle, 
   Brain,
   TrendingUp,
-  LayoutDashboard
+  LayoutDashboard,
+  Files
 } from 'lucide-react';
-
-const steps = [
-  { id: 0, name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { id: 1, name: 'Upload', path: '/upload', icon: Upload },
-  { id: 2, name: 'Extract', path: '/extract', icon: FileText },
-  { id: 3, name: 'Validate', path: '/validate', icon: Shield },
-  { id: 4, name: 'Summary', path: '/summary', icon: CheckCircle },
-];
 
 const Sidebar = () => {
   const location = useLocation();
+  
+  // Determine if we're in multi-doc mode
+  const isMultiDocMode = location.pathname === '/multi-doc-analysis';
+  
+  const steps = isMultiDocMode ? [
+    { id: 0, name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { id: 1, name: 'Upload', path: '/upload', icon: Upload },
+    { id: 2, name: 'Multi Extract', path: '/multi-doc-analysis', icon: Files },
+    { id: 3, name: 'Company Heatmap', path: '/multi-doc-analysis', icon: TrendingUp },
+    { id: 4, name: 'Summary', path: '/summary', icon: CheckCircle },
+  ] : [
+    { id: 0, name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { id: 1, name: 'Upload', path: '/upload', icon: Upload },
+    { id: 2, name: 'Extract', path: '/extract', icon: FileText },
+    { id: 3, name: 'Validate', path: '/validate', icon: Shield },
+    { id: 4, name: 'Summary', path: '/summary', icon: CheckCircle },
+  ];
+  
   const currentStep = steps.find(step => step.path === location.pathname)?.id || 0;
 
   return (

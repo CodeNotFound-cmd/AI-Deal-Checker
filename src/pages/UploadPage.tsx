@@ -8,6 +8,7 @@ const UploadPage = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploaded, setIsUploaded] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const navigate = useNavigate();
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -23,10 +24,17 @@ const UploadPage = () => {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    handleUpload();
+    const files = Array.from(e.dataTransfer.files);
+    handleUpload(files);
   };
 
-  const handleUpload = () => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    handleUpload(files);
+  };
+
+  const handleUpload = (files: File[] = []) => {
+    setUploadedFiles(files);
     setIsUploading(true);
     setUploadProgress(0);
 
@@ -45,7 +53,12 @@ const UploadPage = () => {
   };
 
   const handleAnalyze = () => {
-    navigate('/extract');
+    // Check if multiple documents were uploaded
+    if (uploadedFiles.length > 1) {
+      navigate('/multi-doc-analysis');
+    } else {
+      navigate('/extract');
+    }
   };
 
   return (
@@ -100,15 +113,23 @@ const UploadPage = () => {
                     {isDragging ? 'Drop your file here' : 'Drag & drop your document'}
                   </h3>
                   <p className="text-white/60 mb-4">
-                    Supports PDF, DOC, DOCX files up to 50MB
+                    Supports PDF, DOC, DOCX files up to 50MB. Upload multiple files for comparison analysis.
                   </p>
                   
-                  <button
-                    onClick={handleUpload}
+                  <label
+                    htmlFor="file-upload"
                     className="px-6 py-3 bg-gradient-to-r from-teal-500 to-primary-500 text-white font-semibold rounded-lg hover:from-teal-600 hover:to-primary-600 transition-all duration-200 transform hover:scale-105"
                   >
                     Choose File
-                  </button>
+                    <input
+                      id="file-upload"
+                      type="file"
+                      multiple
+                      accept=".pdf,.doc,.docx"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                    />
+                  </label>
                 </div>
               </motion.div>
 
@@ -146,12 +167,24 @@ const UploadPage = () => {
 
               <div>
                 <h3 className="text-xl font-semibold text-white mb-2">
-                  Document Uploaded Successfully
+                  {uploadedFiles.length > 1 ? 'Documents' : 'Document'} Uploaded Successfully
                 </h3>
-                <div className="flex items-center justify-center space-x-3 text-white/70">
-                  <File className="h-5 w-5" />
-                  <span>deal-contract-2024.pdf</span>
-                  <span className="text-green-400">• 2.4 MB</span>
+                <div className="space-y-2">
+                  {uploadedFiles.length > 0 ? (
+                    uploadedFiles.map((file, index) => (
+                      <div key={index} className="flex items-center justify-center space-x-3 text-white/70">
+                        <File className="h-5 w-5" />
+                        <span>{file.name}</span>
+                        <span className="text-green-400">• {(file.size / (1024 * 1024)).toFixed(1)} MB</span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="flex items-center justify-center space-x-3 text-white/70">
+                      <File className="h-5 w-5" />
+                      <span>deal-contract-2024.pdf</span>
+                      <span className="text-green-400">• 2.4 MB</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -161,7 +194,7 @@ const UploadPage = () => {
                 onClick={handleAnalyze}
                 className="px-8 py-4 bg-gradient-to-r from-teal-500 to-primary-500 text-white font-bold text-lg rounded-xl hover:from-teal-600 hover:to-primary-600 transition-all duration-200 shadow-lg"
               >
-                Analyze Document
+                {uploadedFiles.length > 1 ? 'Analyze Documents' : 'Analyze Document'}
               </motion.button>
             </motion.div>
           )}
@@ -177,7 +210,7 @@ const UploadPage = () => {
           {[
             { title: 'AI-Powered', desc: 'Advanced NLP extraction' },
             { title: 'Real-time', desc: 'Instant risk analysis' },
-            { title: 'Secure', desc: 'Enterprise-grade security' },
+            { title: 'Multi-Doc', desc: 'Compare multiple documents' },
           ].map((feature, index) => (
             <div key={index} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl p-4 text-center">
               <h4 className="font-semibold text-white mb-1">{feature.title}</h4>
