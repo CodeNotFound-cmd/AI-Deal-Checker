@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Shield, CheckCircle, AlertTriangle, XCircle, ArrowRight } from 'lucide-react';
+import { Shield, CheckCircle, AlertTriangle, XCircle, ArrowRight, Zap, BarChart3, Crown, Sparkles } from 'lucide-react';
 import AuditTrail from '../components/AuditTrail';
 import CustomizableRules from '../components/CustomizableRules';
 import AIExplanation from '../components/AIExplanation';
 import BenchmarkComparison from '../components/BenchmarkComparison';
 import ScenarioSimulation from '../components/ScenarioSimulation';
+import PremiumModal from '../components/PremiumModal';
 
 interface ValidationItem {
   id: string;
@@ -108,6 +109,7 @@ const ValidationPage = () => {
   const [isCalculating, setIsCalculating] = useState(true);
   const [validations, setValidations] = useState<ValidationItem[]>([]);
   const [expandedExplanations, setExpandedExplanations] = useState<Set<string>>(new Set());
+  const [premiumModal, setPremiumModal] = useState<'scenario' | 'benchmark' | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -216,12 +218,41 @@ const ValidationPage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Risk Assessment & Validation
-          </h1>
-          <p className="text-white/70">
-            Comprehensive analysis of potential risks and compliance issues
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-white mb-2">
+                Risk Assessment & Validation
+              </h1>
+              <p className="text-white/70">
+                Comprehensive analysis of potential risks and compliance issues
+              </p>
+            </div>
+            
+            {/* Premium Features for Single Document */}
+            <div className="flex items-center space-x-3">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setPremiumModal('scenario')}
+                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-200 shadow-lg flex items-center space-x-2"
+              >
+                <Zap className="h-4 w-4" />
+                <span>What-If Scenarios</span>
+                <Crown className="h-4 w-4" />
+              </motion.button>
+              
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setPremiumModal('benchmark')}
+                className="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-600 transition-all duration-200 shadow-lg flex items-center space-x-2"
+              >
+                <BarChart3 className="h-4 w-4" />
+                <span>Benchmark Analysis</span>
+                <Sparkles className="h-4 w-4" />
+              </motion.button>
+            </div>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -467,6 +498,23 @@ const ValidationPage = () => {
         >
           <ScenarioSimulation />
         </motion.div>
+
+        {/* Premium Modals */}
+        <PremiumModal
+          isOpen={premiumModal === 'scenario'}
+          onClose={() => setPremiumModal(null)}
+          type="scenario"
+          title="What-If Scenario Analysis"
+          description="Simulate changes and see real-time risk impact for this document"
+        />
+        
+        <PremiumModal
+          isOpen={premiumModal === 'benchmark'}
+          onClose={() => setPremiumModal(null)}
+          type="benchmark"
+          title="Industry Benchmark Analysis"
+          description="Compare this document against industry standards and best practices"
+        />
       </div>
     </div>
   );
