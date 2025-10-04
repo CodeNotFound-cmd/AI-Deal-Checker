@@ -175,7 +175,7 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({
                   <div className="font-medium">{highlight.field}</div>
                   <div className="text-gray-300">{highlight.text} • {highlight.confidence}%</div>
                   <div className="absolute top-full left-3 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-                </div>
+                </motion.div>
               )}
             </motion.div>
           ))}
